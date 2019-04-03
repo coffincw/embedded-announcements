@@ -55,5 +55,23 @@ async def preview(ctx):
     else:
         await client.send_message(ctx.message.channel, embed=announcement)
 
+@client.command(name='post', pass_context=True)
+async def post(ctx):
+    """The bot posts the servers announcement to the specified announcement channel
+
+    Args:
+        - ctx: context of the command (used for getting the server id) 
+    """
+    # get server announcement
+    announcement = current_announcement.get(ctx.message.server.id)
+    if announcement is None: # if no announcement set
+        await client.send_message(ctx.message.channel, embed=discord.Embed(description="No announcement message set!", color=discord.Color.red()))
+        return
+    # get announcement channel
+    channel = announcement_channel.get(ctx.message.server.id)
+    if channel is None: # if no announcement channel set
+        await client.send_message(ctx.message.channel, embed=discord.Embed(description="No announcement channel set!", color=discord.Color.red()))
+    else:
+        await client.send_message(channel, embed=announcement)
 
 client.run(BOT_TOKEN)
