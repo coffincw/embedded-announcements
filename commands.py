@@ -5,7 +5,7 @@ import asyncio
 import os
 
 BOT_PREFIX = "e!"
-BOT_TOKEN = os.environ.get('EMBA-BOT_TOKEN')
+BOT_TOKEN = os.environ.get('EMBA_BOT_TOKEN')
 
 current_announcement = {} # current announcement sent | Key: server id, Value: embedded object
 announcement_channel = {} # channel to send announcements to | Key: server id, Value: channel
@@ -30,7 +30,7 @@ async def create(ctx):
         - ctx: context of the command
     """
     # get the input (strip the command syntax)
-    message = ctx.message.content[10:]
+    message = ctx.message.content[9:]
 
     # split message based on '|'
     input = message.split('|')
@@ -43,18 +43,19 @@ async def create(ctx):
     announcement = discord.Embed(color=discord.Color.teal())
     
     # set author based on the first part of the users message 
-    announcement.set_author(name=input[0], icon_url='https://cdn.discordapp.com/attachments/552254229419393036/563021629089644604/announcement_icon.jpg')
+    announcement.set_author(name=input[0], icon_url='https://cdn.discordapp.com/attachments/561393414571294752/563071668533067901/announcement_icon.jpg')
+    input = input[1:]
     for segment in input:
         # use the first word as the field name
-        field_name = segment.split(' ', 1)
+        field_name = segment.split(' ', 1)[0]
 
         # use the rest as the value
         field_text = segment.split(' ', 1)[1]
 
         #add the field
         announcement.add_field(
-            name=field_name
-            value=field_text
+            name=field_name,
+            value=field_text,
             inline=True
         )
     # set announcement
@@ -71,7 +72,7 @@ async def set_announcement_channel(ctx):
         - ctx: context of the command
     """
     # gets the channel id from form: <#0000000000> to 00000000000
-    channel_id = ctx.message.content[7:].replace(" ", "").replace("<", "").replace("#", "").replace(">", "")
+    channel_id = ctx.message.content[10:].replace(" ", "").replace("<", "").replace("#", "").replace(">", "")
 
     # get the selected channel
     channel = client.get_channel(channel_id)
@@ -80,7 +81,7 @@ async def set_announcement_channel(ctx):
     else:
         #set announcement channel for current server
         announcement_channel[ctx.message.server.id] = channel
-        await client.send_message(ctx.message.channel, embed=discord.Embed(description="Set announcements channel as" + channel.mention, color=discord.Color.green()))
+        await client.send_message(ctx.message.channel, embed=discord.Embed(description="Set announcements channel as " + channel.mention, color=discord.Color.green()))
 
 @client.command(name='preview', pass_context=True)
 async def preview(ctx):
