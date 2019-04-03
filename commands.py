@@ -22,7 +22,48 @@ async def on_ready():
     print(client.user.id)
     print('------')
 
-@client.command(name='set', pass_context=True)
+@client.command(name='create', pass_context=True)
+async def create(ctx):
+    """The bot creates an announcement and saves it for the server.  The user can then preview or post the announcement
+    
+    Args:
+        - ctx: context of the command
+    """
+    # get the input (strip the command syntax)
+    message = ctx.message.content[10:]
+
+    # split message based on '|'
+    input = message.split('|')
+    
+    if len(input) is 0:
+        await client.send_message(ctx.message.channel, embed=discord.Embed(description='No contents specified!', color=discord.Color.red()))
+        return
+
+    # create embed with teal color
+    announcement = discord.Embed(color=discord.Color.teal())
+    
+    # set author based on the first part of the users message 
+    announcement.set_author(name=input[0], icon_url='https://cdn.discordapp.com/attachments/552254229419393036/563021629089644604/announcement_icon.jpg')
+    for segment in input:
+        # use the first word as the field name
+        field_name = segment.split(' ', 1)
+
+        # use the rest as the value
+        field_text = segment.split(' ', 1)[1]
+
+        #add the field
+        announcement.add_field(
+            name=field_name
+            value=field_text
+            inline=True
+        )
+    # set announcement
+    current_announcement[ctx.message.server.id] = announcement
+    await client.send_message(ctx.message.channel, embed=discord.Embed(description='Announcement set! Preview with with e!preview', color=discord.Color.green()))
+
+
+
+@client.command(name='channel', pass_context=True)
 async def set_announcement_channel(ctx):
     """The bot sets the announcement channel specified by the user for the current server
     
