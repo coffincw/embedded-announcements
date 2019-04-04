@@ -16,7 +16,7 @@ client.remove_command('help')
 @client.event
 async def on_ready():
     """This function runs when the bot is started"""
-    await client.change_presence(game = Game(name = '<))'))
+    await client.change_presence(game = Game(name = 'the trumpet'))
     print('Logged in as')
     print(client.user.name)
     print(client.user.id)
@@ -25,10 +25,12 @@ async def on_ready():
 @client.command(name='help', pass_context=True)
 async def help(ctx):
     """help command"""
+    # Only allowed to use commands if they have administrative permissions
     if ctx.message.author.server_permissions.administrator:
         # obtain the argument (remove the command and the leading and trailing whitespaces)
         argument = ctx.message.content[7:].strip()
-        print(argument == 'create')
+
+        #check if user specified create module
         if argument == 'create':
             await helpcreate(ctx)
             return
@@ -68,6 +70,7 @@ async def create(ctx):
     Args:
         - ctx: context of the command
     """
+    # Only allowed to use commands if they have administrative permissions
     if ctx.message.author.server_permissions.administrator:
         # get the input (strip the command syntax)
         message = ctx.message.content[9:]
@@ -111,6 +114,7 @@ async def set_announcement_channel(ctx):
     Args:
         - ctx: context of the command
     """
+    # Only allowed to use commands if they have administrative permissions
     if ctx.message.author.server_permissions.administrator:
         # gets the channel id from form: <#0000000000> to 00000000000
         channel_id = ctx.message.content[10:].replace(" ", "").replace("<", "").replace("#", "").replace(">", "")
@@ -131,6 +135,7 @@ async def preview(ctx):
     Args:
         - ctx: context of the command (used for getting the server id) 
     """
+    # Only allowed to use commands if they have administrative permissions
     if ctx.message.author.server_permissions.administrator:
         # get the servers announcement
         announcement = current_announcement.get(ctx.message.server.id)
@@ -146,6 +151,7 @@ async def post(ctx):
     Args:
         - ctx: context of the command (used for getting the server id) 
     """
+    # Only allowed to use commands if they have administrative permissions
     if ctx.message.author.server_permissions.administrator:
         # get server announcement
         announcement = current_announcement.get(ctx.message.server.id)
